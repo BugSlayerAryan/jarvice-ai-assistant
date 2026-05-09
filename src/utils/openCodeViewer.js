@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-export function escapeHtml(value = '') {
+function escapeHtml(value = '') {
   return value
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -43,7 +43,7 @@ function showPopupBlockedToast() {
   });
 }
 
-export function openCodeViewer(code, language = 'text') {
+export function OpenCodeViewer(code, language = 'text') {
   const newWindow = window.open('', '_blank');
 
   if (!newWindow) {
@@ -62,6 +62,7 @@ export function openCodeViewer(code, language = 'text') {
       <head>
         <title>${safeTitle} Code Viewer</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
         <style>
           * {
             box-sizing: border-box;
