@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Bars3Icon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  ArrowUpTrayIcon,
+  CheckIcon,
+} from "@heroicons/react/24/outline";
 
 export default function TopBar({ onMenuToggle = () => {} }) {
   const [paddingRight, setPaddingRight] = useState("24px");
   const [paddingLeft, setPaddingLeft] = useState("24px");
+  const [copied, setCopied] = useState(false);
+
+  const shareLink = "https://jarvice-ai-assistant.vercel.app/";
 
   useEffect(() => {
     const updatePadding = () => {
@@ -32,6 +39,20 @@ export default function TopBar({ onMenuToggle = () => {} }) {
     };
   }, []);
 
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 1600);
+    } catch (error) {
+      setCopied(false);
+      console.error("Failed to copy link:", error);
+    }
+  };
+
   return (
     <header
       className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/8 bg-[#0b0f19]"
@@ -57,10 +78,20 @@ export default function TopBar({ onMenuToggle = () => {} }) {
 
       <button
         type="button"
-        className="inline-flex h-9 items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 text-[14px] font-medium text-white/80 transition hover:bg-white/10 hover:text-white sm:px-4"
+        onClick={handleShare}
+        className={`inline-flex h-9 items-center gap-2 rounded-xl border px-3 text-[14px] font-medium transition sm:px-4 ${
+          copied
+            ? "border-emerald-400/30 bg-emerald-500/15 text-emerald-200"
+            : "border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white"
+        }`}
       >
-        <ArrowUpTrayIcon className="h-4 w-4" />
-        <span>Share</span>
+        {copied ? (
+          <CheckIcon className="h-4 w-4" />
+        ) : (
+          <ArrowUpTrayIcon className="h-4 w-4" />
+        )}
+
+        <span>{copied ? "Copied" : "Share"}</span>
       </button>
     </header>
   );
