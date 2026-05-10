@@ -77,7 +77,7 @@ import Jarvice from '../../assets/Jarvice.png';
 export default function WelcomeState({ keyboardOpen = false }) {
   return (
     <section
-      className="relative flex h-full w-full items-center justify-center overflow-hidden px-4 pb-20 pt-4 sm:px-8 sm:pb-0 sm:pt-0"
+      className="relative flex h-full w-full items-center justify-center overflow-hidden px-4 sm:px-8"
       aria-labelledby="welcome-heading"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -87,19 +87,20 @@ export default function WelcomeState({ keyboardOpen = false }) {
       </div>
 
       <div
-        className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center text-center transition-transform duration-200 sm:-translate-y-6 md:-translate-y-8 lg:-translate-y-10"
-        style={{
-          transform: keyboardOpen
-            ? 'translateY(-8px)'
-            : 'translateY(-8px)',
-        }}
+        className={[
+          'relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center text-center transition-all duration-200',
+          keyboardOpen
+            ? 'translate-y-0'
+            : '-translate-y-8 sm:-translate-y-6 md:-translate-y-8 lg:-translate-y-10',
+        ].join(' ')}
       >
         <div
-          className={
+          className={[
+            'overflow-hidden transition-all duration-200',
             keyboardOpen
-              ? 'h-36 w-44 overflow-hidden sm:h-56 sm:w-64 md:h-64 md:w-72 lg:h-72 lg:w-80 xl:h-80 xl:w-96'
-              : 'h-44 w-52 overflow-hidden sm:h-56 sm:w-64 md:h-64 md:w-72 lg:h-72 lg:w-80 xl:h-80 xl:w-96'
-          }
+              ? 'h-32 w-40'
+              : 'h-44 w-52 sm:h-56 sm:w-64 md:h-64 md:w-72 lg:h-72 lg:w-80 xl:h-80 xl:w-96',
+          ].join(' ')}
         >
           <img
             src={Jarvice}
@@ -110,7 +111,12 @@ export default function WelcomeState({ keyboardOpen = false }) {
 
         <h1
           id="welcome-heading"
-          className="-mt-3 mx-auto max-w-[330px] text-[34px] font-semibold leading-[1.08] tracking-tight text-white sm:max-w-2xl sm:text-5xl md:-mt-4 md:text-6xl lg:-mt-5 lg:text-[56px]"
+          className={[
+            'mx-auto font-semibold leading-[1.08] tracking-tight text-white transition-all duration-200',
+            keyboardOpen
+              ? '-mt-2 max-w-[300px] text-[30px]'
+              : '-mt-3 max-w-[330px] text-[34px] sm:max-w-2xl sm:text-5xl md:-mt-4 md:text-6xl lg:-mt-5 lg:text-[56px]',
+          ].join(' ')}
         >
           What can I help you build today?
         </h1>

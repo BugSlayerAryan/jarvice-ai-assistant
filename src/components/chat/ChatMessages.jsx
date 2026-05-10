@@ -159,6 +159,7 @@ export default function ChatMessages({
   isLoading = false,
   onSuggestionClick = () => {},
   keyboardOpen = false,
+  keyboardHeight = 0,
 }) {
   const messagesEndRef = useRef(null);
 
@@ -171,7 +172,14 @@ export default function ChatMessages({
 
   if (messages.length === 0) {
     return (
-      <div className="h-full min-h-0 w-full overflow-hidden">
+      <div
+        className="w-full overflow-hidden"
+        style={{
+          height: keyboardOpen
+            ? `max(300px, calc(100% - ${keyboardHeight + 92}px))`
+            : '100%',
+        }}
+      >
         <WelcomeState
           onSuggestionClick={onSuggestionClick}
           keyboardOpen={keyboardOpen}

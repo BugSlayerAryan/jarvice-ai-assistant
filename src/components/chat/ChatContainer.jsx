@@ -153,12 +153,13 @@ export default function ChatContainer() {
       }
 
       const viewport = window.visualViewport;
-      const keyboard = Math.max(
+
+      const nextKeyboardHeight = Math.max(
         0,
         window.innerHeight - viewport.height - viewport.offsetTop
       );
 
-      setKeyboardHeight(keyboard);
+      setKeyboardHeight(nextKeyboardHeight);
     };
 
     updateKeyboardHeight();
@@ -212,27 +213,20 @@ export default function ChatContainer() {
     }
   };
 
+  const keyboardOpen = keyboardHeight > 80;
+
   return (
-    <section
-      className="relative flex h-[calc(100dvh-56px)] min-h-0 flex-col overflow-hidden bg-[#0b0f19] lg:h-[calc(100dvh-64px)]"
-      style={{
-        '--keyboard-height': `${keyboardHeight}px`,
-      }}
-    >
+    <section className="relative flex h-[calc(100dvh-56px)] min-h-0 flex-col overflow-hidden bg-[#0b0f19] lg:h-[calc(100dvh-64px)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.10),transparent_34%),radial-gradient(circle_at_bottom,rgba(34,197,94,0.05),transparent_25%)]" />
 
       <div className="relative z-10 flex h-full min-h-0 flex-col overflow-hidden">
-        <div
-          className="min-h-0 flex-1 overflow-hidden"
-          style={{
-            paddingBottom: keyboardHeight > 0 ? '88px' : '0px',
-          }}
-        >
+        <div className="min-h-0 flex-1 overflow-hidden">
           <ChatMessages
             messages={messages}
             isLoading={isLoading}
             onSuggestionClick={handleSendMessage}
-            keyboardOpen={keyboardHeight > 0}
+            keyboardOpen={keyboardOpen}
+            keyboardHeight={keyboardHeight}
           />
         </div>
 

@@ -196,6 +196,8 @@ export default function ChatInput({
   const [message, setMessage] = useState('');
   const textareaRef = useRef(null);
 
+  const keyboardOpen = keyboardHeight > 80;
+
   useEffect(() => {
     const textarea = textareaRef.current;
 
@@ -225,10 +227,9 @@ export default function ChatInput({
     <div
       className="pointer-events-none absolute inset-x-0 z-30 flex justify-center px-3 sm:px-6"
       style={{
-        bottom:
-          keyboardHeight > 0
-            ? `${keyboardHeight + 8}px`
-            : 'calc(env(safe-area-inset-bottom) + 12px)',
+        bottom: keyboardOpen
+          ? `${keyboardHeight + 8}px`
+          : 'calc(env(safe-area-inset-bottom) + 12px)',
       }}
     >
       <div className="pointer-events-auto w-full max-w-[896px]">
