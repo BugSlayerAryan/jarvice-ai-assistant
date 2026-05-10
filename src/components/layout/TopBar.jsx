@@ -43,7 +43,7 @@ export default function TopBar({ onMenuToggle = () => {} }) {
         paddingRight,
       }}
     >
-      <div className="flex min-w-0 items-center gap-1 sm:gap-2">
+      <div className="flex min-w-0 items-center gap-3 sm:gap-2">
         <button
           type="button"
           onClick={onMenuToggle}
