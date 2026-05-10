@@ -493,6 +493,27 @@ function getFileExtension(name = '') {
   return extension.slice(0, 4).toUpperCase();
 }
 
+function readFileAsDataUrl(file) {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/')) {
+      resolve(null);
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = () => {
+      resolve(null);
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function ChatInput({
   onSendMessage = () => {},
   isLoading = false,
@@ -560,16 +581,6 @@ export default function ChatInput({
     };
   }, []);
 
-  useEffect(() => {
-    return () => {
-      selectedFiles.forEach((item) => {
-        if (item.previewUrl) {
-          URL.revokeObjectURL(item.previewUrl);
-        }
-      });
-    };
-  }, [selectedFiles]);
-
   const handleSend = () => {
     const nextMessage = message.trim();
 
@@ -578,13 +589,6 @@ export default function ChatInput({
     onSendMessage(nextMessage, selectedFiles);
 
     setMessage('');
-
-    selectedFiles.forEach((item) => {
-      if (item.previewUrl) {
-        URL.revokeObjectURL(item.previewUrl);
-      }
-    });
-
     setSelectedFiles([]);
   };
 
@@ -599,20 +603,20 @@ export default function ChatInput({
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const files = Array.from(event.target.files || []);
 
     if (files.length === 0) return;
 
-    const nextFiles = files.map((file) => ({
-      file,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      previewUrl: file.type.startsWith('image/')
-        ? URL.createObjectURL(file)
-        : null,
-    }));
+    const nextFiles = await Promise.all(
+      files.map(async (file) => ({
+        file,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        previewUrl: await readFileAsDataUrl(file),
+      }))
+    );
 
     setSelectedFiles((prev) => [...prev, ...nextFiles]);
 
@@ -620,15 +624,9 @@ export default function ChatInput({
   };
 
   const removeFile = (indexToRemove) => {
-    setSelectedFiles((prev) => {
-      const fileToRemove = prev[indexToRemove];
-
-      if (fileToRemove?.previewUrl) {
-        URL.revokeObjectURL(fileToRemove.previewUrl);
-      }
-
-      return prev.filter((_, index) => index !== indexToRemove);
-    });
+    setSelectedFiles((prev) =>
+      prev.filter((_, index) => index !== indexToRemove)
+    );
   };
 
   const handleVoiceInput = () => {
@@ -666,7 +664,7 @@ export default function ChatInput({
             <div className="border-b border-white/10 px-3 pb-2 pt-3 sm:px-4">
               <div className="hide-scrollbar flex gap-2 overflow-x-auto">
                 {selectedFiles.map((item, index) => {
-                  const isImage = item.type.startsWith('image/');
+                  const isImage = item.type.startsWith('image/') && item.previewUrl;
 
                   return (
                     <div
